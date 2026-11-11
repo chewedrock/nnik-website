@@ -1,0 +1,579 @@
+---
+// src/pages/index.astro
+const awards = [
+  { title: "best sound design", event: "mahindra excellence in theatre award", year: "2014" },
+  { title: "best sound design", event: "asian american podcasters association / golden crane award", year: "2021" },
+  { title: "artist in residence", event: "goethe-institut at wisp kollektiv, leipzig", year: "2018" },
+  { title: "artistic grant", event: "prince claus fonds (nl)", year: "2019" },
+  { title: "coproduction grant", event: "internationaler koproduktionsfonds (de)", year: "2020" }
+];
+
+const projects = [
+  {
+    id: "if-we-vanish",
+    title: "if we vanish",
+    subtitle: "immersive audio-visual & contemporary dance",
+    year: "2019–2022",
+    category: "project director",
+    video: "http://12hz.in/wp-content/uploads/2020/01/EKJ-thumbnail3.mp4",
+    credits: "nikhil nagaraj, felix deufel, ronita mookerji, tobias feldmeier, aruna ganesh ram, spriha nakhare, niranjan gokhale",
+    support: "supported by international coproduction fund goethe-institut & goethe-institut bangalore",
+    description: "if we vanish is an immersive audio-visual and contemporary dance performance presenting an artistic study about some of the most quiet and secluded places in the world. initiated by nikhil nagaraj and felix deufel from a series of isolated audio field recordings, the performance explores endangered soundscapes. in performance, tracking the dancer's body interpolates into pure natural datasets. pure listening causes crucial, intense therapeutic experiences, offering positive health impacts while raising environmental acoustic awareness.",
+    performances: ["13.11.2021 zimmt leipzig", "14.11.2021 zimmt leipzig", "20.11.2021 city club augsburg", "11.12.2021 shoonya bangalore", "12.12.2021 shoonya bangalore", "16.12.2021 g5a warehouse mumbai", "19.12.2021 the box pune"],
+    mosaicClass: "span-wide",
+    aspect: "16/9"
+  },
+  {
+    id: "scrolls-and-leaves",
+    title: "scrolls & leaves",
+    subtitle: "spatial sound & historical audio storytelling",
+    year: "2020–2022",
+    category: "sound design",
+    video: "http://12hz.in/wp-content/uploads/2020/10/SL1untitled.m4v",
+    credits: "sound design & audio engineering by nikhil nagaraj for ncbs",
+    support: "national centre for biological sciences",
+    description: "scrolls & leaves is a world-class spatial sound design experience and podcast project telling untold histories of science, trade, and culture across the indian ocean world. utilizing complex binaural audio spatialization and field recordings, it brings historical soundscapes vividly back to life for global listeners.",
+    performances: ["global podcast release 2020-2022", "featured across international audio & science archives"],
+    mosaicClass: "span-tall",
+    aspect: "3/4"
+  },
+  {
+    id: "shizukesa",
+    title: "shizukesa",
+    subtitle: "experimental sound project & silence study",
+    year: "2020",
+    category: "composition",
+    video: "http://12hz.in/wp-content/uploads/2020/05/t_video6170384741691293905_mod.mp4",
+    credits: "concept, field recording & sound design by nikhil nagaraj",
+    support: "12 hz sound laboratories",
+    description: "shizukesa (japanese for tranquility / serene quietness) is an experimental electroacoustic acoustic study exploring micro-dynamics, silence, and environmental reverberations in controlled acoustic spaces.",
+    performances: ["12 hz sound laboratories listening session 2020"],
+    mosaicClass: "span-normal",
+    aspect: "1/1"
+  },
+  {
+    id: "once-upon-a-time",
+    title: "once upon a time",
+    subtitle: "acoustic architecture & spatial sound",
+    year: "2020",
+    category: "sound design",
+    video: "http://12hz.in/wp-content/uploads/2020/01/once-upon-thumbnail_new.mp4",
+    credits: "sound design & spatial engineering by nikhil nagaraj",
+    support: "flinn works & contemporary theatre collaborations",
+    description: "an architectural sound design installation using multi-channel spatialization to reframe acoustic storytelling in unconventional performance spaces.",
+    performances: ["international touring exhibition 2020"],
+    mosaicClass: "span-normal",
+    aspect: "16/10"
+  },
+  {
+    id: "eidgah-ke-jinnat",
+    title: "eidgah ke jinnat",
+    subtitle: "theatrical sound design",
+    year: "2019",
+    category: "sound design",
+    video: "http://12hz.in/wp-content/uploads/2020/01/EKJ-thumbnail3.mp4",
+    credits: "sound designer: nikhil nagaraj | bhasha centre for performing arts",
+    support: "bhasha centre for performing arts",
+    description: "comprehensive theatrical sound design for the acclaimed stage adaptation of eidgah ke jinnat. blending visceral atmospheric textures, emotional scoring, and dynamic live spatial cues.",
+    performances: ["national theatre tour (india) 2019"],
+    mosaicClass: "span-big",
+    aspect: "16/9"
+  },
+  {
+    id: "zllll",
+    title: "[z]llll",
+    subtitle: "generative electronic & sound art",
+    year: "2020",
+    category: "experiment",
+    video: "http://12hz.in/wp-content/uploads/2020/01/zlll-thumbnail_new.mp4",
+    credits: "generative audio & sound art by nikhil nagaraj",
+    support: "12 hz sound laboratories",
+    description: "an experimental sound synthesis project using low-frequency oscillation (lfo) manipulation, custom feedback loops, and sub-bass resonance research.",
+    performances: ["experimental sound archive 2020"],
+    mosaicClass: "span-normal",
+    aspect: "4/3"
+  },
+  {
+    id: "the-threshold",
+    title: "the threshold",
+    subtitle: "3d sound concert & musical journey",
+    year: "2020",
+    category: "3d sound",
+    video: "http://12hz.in/wp-content/uploads/2020/01/threshold-thumbnail_new.mp4",
+    credits: "3d sound design & live audio mix by nikhil nagaraj",
+    support: "the threshold ensemble",
+    description: "an immersive 3d spatial audio concert experience, placing audience members in the center of multi-layered vocal, instrumental, and electronic soundscapes.",
+    performances: ["live 3d concert series 2020"],
+    mosaicClass: "span-wide",
+    aspect: "21/9"
+  },
+  {
+    id: "i-am-not-here",
+    title: "i am not here",
+    subtitle: "goethe-institut sound production",
+    year: "2018",
+    category: "sound design",
+    video: "http://12hz.in/wp-content/uploads/2020/01/i-am-not-here-trailer.mp4",
+    credits: "sound design: nikhil nagaraj | director: deepika arwind",
+    support: "goethe-institut bangalore",
+    description: "sound design for deepika arwind's critically acclaimed production i am not here. a stark, high-tension acoustic landscape exploring presence, vulnerability, and sound dynamics.",
+    performances: ["goethe-institut / national tour 2018-2019"],
+    mosaicClass: "span-tall",
+    aspect: "3/4"
+  }
+];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nikhil nagaraj // creative archive</title>
+    <style>
+      :root {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+        --accent-color: #00ff66;
+        --border-color: #1a1a1a;
+        --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      }
+
+      html, body {
+        width: 100vw;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        text-transform: lowercase;
+      }
+
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #000000; }
+      ::-webkit-scrollbar-thumb { background: #111111; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: var(--font-mono);
+        padding: 40px 64px;
+        line-height: 1.4;
+        width: 100%;
+        margin: 0;
+        contain: content;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 1px solid var(--text-color);
+        padding-bottom: 16px;
+        margin-bottom: 24px;
+        width: 100%;
+      }
+
+      .header-left { padding-left: 12px; }
+
+      .brand-title { 
+        font-size: 28px; 
+        font-weight: 900; 
+        letter-spacing: -1px; 
+        line-height: 1;
+      }
+
+      .brand-title a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .brand-sub { 
+        font-size: 11px; 
+        color: #888; 
+        margin-top: 6px; 
+      }
+
+      nav { padding-right: 12px; }
+
+      nav a {
+        color: var(--text-color);
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 12px;
+      }
+
+      nav a.active, nav a:hover { color: var(--accent-color); }
+
+      .section-label {
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 14px;
+        padding-left: 12px;
+        letter-spacing: 1px;
+      }
+
+      /* True Non-Uniform Mosaic Grid */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        grid-auto-flow: dense;
+        gap: 12px;
+        width: 100%;
+        padding: 0 12px;
+        margin-bottom: 48px;
+      }
+
+      .card {
+        border: 1px solid var(--border-color);
+        background: #080808;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        transition: border-color 0.15s ease, transform 0.15s ease;
+        will-change: transform, border-color;
+        height: 100%;
+      }
+
+      .card.span-normal { grid-column: span 1; grid-row: span 1; }
+      .card.span-wide { grid-column: span 2; grid-row: span 1; }
+      .card.span-tall { grid-column: span 1; grid-row: span 2; }
+      .card.span-big { grid-column: span 2; grid-row: span 2; }
+
+      .card:hover {
+        border-color: var(--text-color);
+        transform: translateY(-2px);
+      }
+
+      .thumb-box {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: 120px;
+        overflow: hidden;
+        background: #050505;
+        border-bottom: 1px solid var(--border-color);
+        flex-grow: 1;
+      }
+
+      .lazy-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        filter: grayscale(100%) contrast(120%);
+        transition: filter 0.25s ease, transform 0.25s ease;
+        transform: translateZ(0);
+        background: #000;
+      }
+
+      .card:hover .lazy-video {
+        filter: grayscale(0%) contrast(100%);
+        transform: scale(1.03);
+      }
+
+      .card-info {
+        padding: 8px 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+        flex-shrink: 0;
+        background: #080808;
+      }
+
+      .card-title {
+        font-size: 11px;
+        font-weight: bold;
+        color: #ffffff;
+        line-height: 1.35;
+        white-space: normal;
+        word-break: break-word;
+      }
+
+      .card-year {
+        font-size: 9px;
+        color: var(--accent-color);
+        flex-shrink: 0;
+        padding-top: 1px;
+      }
+
+      .card:hover .card-title { color: var(--accent-color); }
+
+      /* Bottom CV Section */
+      .awards-footer {
+        padding: 0 12px;
+        margin-top: 32px;
+        border-top: 1px solid var(--border-color);
+        padding-top: 24px;
+        max-width: 800px;
+      }
+
+      .cv-label {
+        font-size: 11px;
+        font-weight: bold;
+        color: var(--accent-color);
+        letter-spacing: 1.5px;
+        margin-bottom: 16px;
+      }
+
+      .cv-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .cv-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 6px 0;
+        border-bottom: 1px dashed #151515;
+      }
+
+      .cv-title {
+        font-size: 12px;
+        font-weight: bold;
+        color: #ffffff;
+      }
+
+      .cv-event {
+        font-size: 11px;
+        color: #888888;
+        margin-left: 6px;
+      }
+
+      .cv-year {
+        font-size: 10px;
+        color: var(--accent-color);
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+
+      /* Modal Inspector */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        padding: 20px;
+      }
+
+      .modal-backdrop.active { display: flex; }
+
+      .modal-content {
+        background: #0a0a0a;
+        border: 1px solid var(--accent-color);
+        width: 100%;
+        max-width: 640px;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 24px;
+        position: relative;
+        box-shadow: 0 0 30px rgba(0, 255, 102, 0.15);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: transparent;
+        border: 1px solid #444;
+        color: #fff;
+        padding: 4px 10px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      .close-btn:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+      }
+
+      .modal-header { margin-bottom: 18px; border-bottom: 1px solid #222; padding-bottom: 12px; }
+      .modal-title { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+      .modal-sub { font-size: 11px; color: var(--accent-color); }
+
+      .modal-section { margin-bottom: 16px; }
+      .modal-label { font-size: 9px; color: #777; letter-spacing: 1px; margin-bottom: 4px; }
+      .modal-text { font-size: 12px; color: #ccc; line-height: 1.5; }
+      
+      .performance-list { list-style: none; padding-left: 0; }
+      .performance-list li { font-size: 11px; color: #aaa; padding: 3px 0; border-bottom: 1px solid #151515; }
+
+      @media (max-width: 768px) {
+        .card.span-wide, .card.span-big { grid-column: span 1; }
+        .card.span-tall, .card.span-big { grid-row: span 1; }
+      }
+
+      @media (max-width: 600px) {
+        body { padding: 24px 20px; }
+        .header-left, .awards-footer, .section-label, .grid { padding-left: 0; padding-right: 0; }
+        .cv-row { flex-direction: column; gap: 2px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <div class="brand-title"><a href="/">nikhil nagaraj</a></div>
+        <div class="brand-sub">sound designer & technician // creative archive</div>
+      </div>
+      <nav>
+        <a href="/" class="active">[index]</a>
+        <a href="/about">[about]</a>
+        <a href="/contact">[contact]</a>
+      </nav>
+    </header>
+
+    <div class="section-label">// creative archive</div>
+
+    <main class="grid">
+      {projects.map((item) => (
+        <div 
+          class={`card project-card ${item.mosaicClass}`}
+          data-project={JSON.stringify(item)}>
+          <div class="thumb-box" style={`aspect-ratio: ${item.aspect};`}>
+            <video 
+              class="lazy-video"
+              data-src={item.video} 
+              loop 
+              muted 
+              playsinline 
+              preload="none">
+            </video>
+          </div>
+          <div class="card-info">
+            <span class="card-title">{item.title}</span>
+            <span class="card-year">{item.year}</span>
+          </div>
+        </div>
+      ))}
+    </main>
+
+    <!-- Bottom CV Format Section -->
+    <footer class="awards-footer">
+      <div class="cv-label">// awards & recognitions</div>
+      <div class="cv-list">
+        {awards.map((item) => (
+          <div class="cv-row">
+            <div>
+              <span class="cv-title">{item.title}</span>
+              <span class="cv-event">— {item.event}</span>
+            </div>
+            <span class="cv-year">{item.year}</span>
+          </div>
+        ))}
+      </div>
+    </footer>
+
+    <!-- Modal Inspector -->
+    <div id="projectModal" class="modal-backdrop">
+      <div class="modal-content">
+        <button id="closeModalBtn" class="close-btn">[close x]</button>
+        <div class="modal-header">
+          <div id="modalTitle" class="modal-title"></div>
+          <div id="modalSub" class="modal-sub"></div>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-label">// project description</div>
+          <div id="modalDesc" class="modal-text"></div>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-label">// credits & collaborators</div>
+          <div id="modalCredits" class="modal-text"></div>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-label">// support & institutions</div>
+          <div id="modalSupport" class="modal-text"></div>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-label">// performances & exhibitions</div>
+          <ul id="modalPerformances" class="performance-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const videos = document.querySelectorAll('.lazy-video');
+        
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            const video = entry.target;
+            if (entry.isIntersecting) {
+              if (!video.src && video.dataset.src) {
+                video.src = video.dataset.src;
+              }
+              requestAnimationFrame(() => {
+                video.play().catch(() => {});
+              });
+            } else {
+              if (video.src) {
+                video.pause();
+              }
+            }
+          });
+        }, { rootMargin: '50px' });
+
+        videos.forEach((video) => observer.observe(video));
+
+        const modal = document.getElementById('projectModal');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const cards = document.querySelectorAll('.project-card');
+
+        function openModal(data) {
+          document.getElementById('modalTitle').innerText = data.title;
+          document.getElementById('modalSub').innerText = `${data.year} — ${data.subtitle}`;
+          document.getElementById('modalDesc').innerText = data.description;
+          document.getElementById('modalCredits').innerText = data.credits;
+          document.getElementById('modalSupport').innerText = data.support;
+          
+          const perfList = document.getElementById('modalPerformances');
+          perfList.innerHTML = '';
+          data.performances.forEach(p => {
+            const li = document.createElement('li');
+            li.innerText = `> ${p}`;
+            perfList.appendChild(li);
+          });
+
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+
+        cards.forEach((card) => {
+          card.addEventListener('click', () => {
+            const projectData = JSON.parse(card.getAttribute('data-project'));
+            openModal(projectData);
+          });
+        });
+
+        closeBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeModal();
+        });
+      });
+    </script>
+  </body>
+</html>
