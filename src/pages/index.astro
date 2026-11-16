@@ -1,5 +1,5 @@
 ---
-// src/pages/index.astro — Performance-optimized build
+// src/pages/index.astro — Performance-optimized build with unified modal typography
 const awards = [
   { title: "best sound design", event: "mahindra excellence in theatre award", year: "2014" },
   { title: "best sound design", event: "asian american podcasters association / golden crane award", year: "2021" },
@@ -131,16 +131,16 @@ const projects = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nikhil Nagaraj // Creative Archive</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
-    <!-- Preconnect & DNS-prefetch for instant media handshake -->
     <link rel="dns-prefetch" href="https://12hz.in" />
     <link rel="preconnect" href="https://12hz.in" crossorigin />
-    <!-- Prefetch internal pages on idle for zero-lag navigation -->
     <link rel="prefetch" href="/about" />
     <link rel="prefetch" href="/contact" />
     <style>
       :root {
         --bg-color: #000000;
+        --surface-color: #080808;
         --text-color: #ffffff;
+        --muted-color: #888888;
         --accent-color: #00ff66;
         --border-color: #1a1a1a;
         --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -160,14 +160,14 @@ const projects = [
       }
 
       ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #000000; }
-      ::-webkit-scrollbar-thumb { background: #1a1a1a; }
+      ::-webkit-scrollbar-track { background: var(--bg-color); }
+      ::-webkit-scrollbar-thumb { background: var(--border-color); }
       ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
 
       body {
         font-family: var(--font-mono);
         padding: 40px 64px;
-        line-height: 1.4;
+        line-height: 1.5;
       }
 
       header {
@@ -196,7 +196,7 @@ const projects = [
 
       .brand-sub { 
         font-size: 14px; 
-        color: #888; 
+        color: var(--muted-color); 
         margin-top: 8px; 
       }
 
@@ -213,8 +213,8 @@ const projects = [
       nav a.active, nav a:hover { color: var(--accent-color); }
 
       .section-label {
-        font-size: 11px;
-        color: #666;
+        font-size: 12px;
+        color: var(--muted-color);
         margin-bottom: 14px;
         padding-left: 12px;
         letter-spacing: 1px;
@@ -233,7 +233,7 @@ const projects = [
 
       .card {
         border: 1px solid var(--border-color);
-        background: #080808;
+        background: var(--surface-color);
         text-decoration: none;
         color: inherit;
         display: flex;
@@ -287,26 +287,26 @@ const projects = [
       }
 
       .card-info {
-        padding: 8px 10px;
+        padding: 10px 12px;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         gap: 8px;
         flex-shrink: 0;
-        background: #080808;
+        background: var(--surface-color);
       }
 
       .card-title {
-        font-size: 11px;
+        font-size: 13px;
         font-weight: bold;
-        color: #ffffff;
+        color: var(--text-color);
         line-height: 1.35;
         white-space: normal;
         word-break: break-word;
       }
 
       .card-year {
-        font-size: 9px;
+        font-size: 11px;
         color: var(--accent-color);
         flex-shrink: 0;
         padding-top: 1px;
@@ -320,13 +320,13 @@ const projects = [
         margin-top: 32px;
         border-top: 1px solid var(--border-color);
         padding-top: 24px;
-        max-width: 800px;
+        max-width: 860px;
         content-visibility: auto;
-        contain-intrinsic-size: 0 220px;
+        contain-intrinsic-size: 0 240px;
       }
 
       .cv-label {
-        font-size: 11px;
+        font-size: 13px;
         font-weight: bold;
         color: var(--accent-color);
         letter-spacing: 1.5px;
@@ -336,73 +336,75 @@ const projects = [
       .cv-list {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
       }
 
       .cv-row {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        padding: 6px 0;
-        border-bottom: 1px dashed #151515;
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--border-color);
       }
 
       .cv-title {
-        font-size: 12px;
+        font-size: 14px;
         font-weight: bold;
-        color: #ffffff;
+        color: var(--text-color);
       }
 
       .cv-event {
-        font-size: 11px;
-        color: #888888;
+        font-size: 13px;
+        color: var(--muted-color);
         margin-left: 6px;
       }
 
       .cv-year {
-        font-size: 10px;
+        font-size: 12px;
         color: var(--accent-color);
         font-weight: bold;
         flex-shrink: 0;
       }
 
-      /* Lightweight GPU-friendly Modal Inspector */
+      /* Unified Project Modal Inspector */
       .modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.9);
+        background: rgba(0, 0, 0, 0.92);
         display: none;
         align-items: center;
         justify-content: center;
         z-index: 999;
-        padding: 20px;
+        padding: 24px;
       }
 
       .modal-backdrop.active { display: flex; }
 
       .modal-content {
-        background: #0a0a0a;
+        background: var(--surface-color);
         border: 1px solid var(--accent-color);
         width: 100%;
-        max-width: 640px;
-        max-height: 85vh;
+        max-width: 720px;
+        max-height: 88vh;
         overflow-y: auto;
-        padding: 24px;
+        padding: 32px;
         position: relative;
+        color: var(--text-color);
       }
 
       .close-btn {
         position: absolute;
-        top: 16px;
-        right: 16px;
-        background: transparent;
-        border: 1px solid #444;
-        color: #fff;
-        padding: 6px 12px;
+        top: 24px;
+        right: 24px;
+        background: var(--bg-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        padding: 8px 14px;
         font-family: var(--font-mono);
-        font-size: 11px;
+        font-size: 14px;
         cursor: pointer;
         touch-action: manipulation;
+        transition: border-color 0.15s ease, color 0.15s ease;
       }
 
       .close-btn:hover {
@@ -410,16 +412,63 @@ const projects = [
         color: var(--accent-color);
       }
 
-      .modal-header { margin-bottom: 18px; border-bottom: 1px solid #222; padding-bottom: 12px; }
-      .modal-title { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 4px; }
-      .modal-sub { font-size: 11px; color: var(--accent-color); }
+      .modal-header {
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 16px;
+        padding-right: 110px;
+      }
 
-      .modal-section { margin-bottom: 16px; }
-      .modal-label { font-size: 9px; color: #777; letter-spacing: 1px; margin-bottom: 4px; }
-      .modal-text { font-size: 12px; color: #ccc; line-height: 1.5; }
+      .modal-title {
+        font-size: 26px;
+        font-weight: 900;
+        color: var(--text-color);
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+
+      .modal-sub {
+        font-size: 14px;
+        color: var(--accent-color);
+      }
+
+      .modal-section {
+        margin-bottom: 22px;
+      }
+
+      .modal-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .modal-label {
+        font-size: 12px;
+        color: var(--muted-color);
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+
+      .modal-text {
+        font-size: 15px;
+        color: var(--text-color);
+        line-height: 1.65;
+      }
       
-      .performance-list { list-style: none; padding-left: 0; }
-      .performance-list li { font-size: 11px; color: #aaa; padding: 3px 0; border-bottom: 1px solid #151515; }
+      .performance-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .performance-list li {
+        font-size: 14px;
+        color: var(--text-color);
+        padding: 6px 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .performance-list li:last-child {
+        border-bottom: none;
+      }
 
       @media (max-width: 768px) {
         .card.span-wide, .card.span-big { grid-column: span 1; }
@@ -434,6 +483,12 @@ const projects = [
         nav a:first-child { margin-left: 0; }
         .header-left, .awards-footer, .section-label, .grid { padding-left: 0; padding-right: 0; }
         .cv-row { flex-direction: column; gap: 2px; }
+        .modal-backdrop { padding: 16px; }
+        .modal-content { padding: 24px 20px; }
+        .modal-header { padding-right: 0; margin-top: 32px; }
+        .close-btn { top: 16px; right: 16px; }
+        .modal-title { font-size: 22px; }
+        .modal-text { font-size: 14px; }
       }
     </style>
   </head>
@@ -492,7 +547,7 @@ const projects = [
       </div>
     </footer>
 
-    <!-- Modal Inspector -->
+    <!-- Project Inspector Modal -->
     <div id="projectModal" class="modal-backdrop">
       <div class="modal-content">
         <button id="closeModalBtn" class="close-btn">[close x]</button>
@@ -560,7 +615,6 @@ const projects = [
 
         videos.forEach((video) => observer.observe(video));
 
-        // Pause videos when tab is hidden to save battery & CPU
         document.addEventListener('visibilitychange', () => {
           if (document.hidden) {
             videos.forEach((v) => v.pause());
