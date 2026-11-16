@@ -1,196 +1,24 @@
 ---
-// src/pages/contact.astro
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nikhil nagaraj // contact</title>
-    <style>
-      :root {
-        --bg-color: #000000;
-        --text-color: #ffffff;
-        --accent-color: #00ff66;
-        --border-color: #00ff66;
-        --input-bg: #031408;
-        --input-placeholder: #008033;
-        --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      }
-
-      html, body {
-        width: 100vw;
-        min-height: 100vh;
-        overflow-x: hidden;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        text-transform: lowercase;
-      }
-
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #000000; }
-      ::-webkit-scrollbar-thumb { background: #111111; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
-
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-
-      body {
-        font-family: var(--font-mono);
-        padding: 40px 64px;
-        line-height: 1.4;
-        width: 100%;
-        margin: 0;
-        contain: content;
-      }
-
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        border-bottom: 1px solid var(--text-color);
-        padding-bottom: 16px;
-        margin-bottom: 28px;
-        width: 100%;
-      }
-
-      .header-left {
-        padding-left: 12px;
-      }
-
-      .brand-title { 
-        font-size: 28px; 
-        font-weight: 900; 
-        letter-spacing: -1px; 
-        line-height: 1;
-      }
-      
-      .brand-title a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .brand-sub { 
-        font-size: 11px; 
-        color: #888; 
-        margin-top: 6px; 
-      }
-
-      nav {
-        padding-right: 12px;
-      }
-
-      nav a {
-        color: var(--text-color);
-        text-decoration: none;
-        margin-left: 20px;
-        font-size: 12px;
-      }
-      nav a.active, nav a:hover { color: var(--accent-color); }
-
-      .section-label {
-        font-size: 13px;
-        font-weight: bold;
-        color: var(--accent-color);
-        margin-bottom: 24px;
-        padding-left: 12px;
-        letter-spacing: 1.5px;
-      }
-
-      /* Contact Form Layout */
-      .contact-container {
-        max-width: 600px;
-        padding: 0 12px;
-      }
-
-      .contact-form {
-        display: flex;
-        flex-direction: column;
-        gap: 22px;
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      /* Distinct, Larger Field Headers */
-      .form-group label {
-        font-size: 14px;
-        font-weight: bold;
-        color: #ffffff;
-        letter-spacing: 1px;
-      }
-
-      .form-group input,
-      .form-group textarea {
-        background: var(--input-bg);
-        border: 1px solid var(--border-color);
-        color: var(--accent-color);
-        font-family: var(--font-mono);
-        font-size: 13px;
-        padding: 12px 14px;
-        width: 100%;
-        outline: none;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-      }
-
-      .form-group input::placeholder,
-      .form-group textarea::placeholder {
-        color: var(--input-placeholder);
-      }
-
-      .form-group input:focus,
-      .form-group textarea:focus {
-        background: #05220e;
-        border-color: var(--accent-color);
-        box-shadow: 0 0 12px rgba(0, 255, 102, 0.25);
-      }
-
-      .submit-btn {
-        background: var(--accent-color);
-        border: 1px solid var(--accent-color);
-        color: #000000;
-        font-weight: bold;
-        font-family: var(--font-mono);
-        font-size: 12px;
-        padding: 12px 24px;
-        cursor: pointer;
-        transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-        margin-top: 6px;
-        align-self: flex-start;
-      }
-
-      .submit-btn:hover {
-        background: #000000;
-        color: var(--accent-color);
-        box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
-      }
-
-      @media (max-width: 600px) {
-        body { padding: 24px 20px; }
-        .header-left, .section-label, .contact-container { padding-left: 0; padding-right: 0; }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="header-left">
-        <div class="brand-title"><a href="/">nikhil nagaraj</a></div>
-        <div class="brand-sub">sound designer & technician // creative archive</div>
-      </div>
-      <nav>
-        <a href="/">[index]</a>
-        <a href="/about">[about]</a>
-        <a href="/contact" class="active">[contact]</a>
-      </nav>
+<Layout title="Contact — Nikhil Nagaraj">
+  <main class="contact-container">
+    <header class="contact-header">
+      <h1>// contact</h1>
+      <p class="subtitle">sound design, direction, & collaborations</p>
     </header>
 
-    <div class="section-label">// contact</div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p>Available for select film, interactive, and spatial audio commissions.</p>
+        <div class="direct-links">
+          <p class="label">// direct</p>
+          <a href="mailto:contact@nnik.in">contact@nnik.in</a>
+        </div>
+      </div>
 
-    <main class="contact-container">
-      <form action="https://formspree.io/f/contact@nnik.in" method="POST" class="contact-form">
+      <form action="https://formspree.io/f/mjywyjgo" method="POST" class="contact-form">
         <div class="form-group">
           <label for="name">// name</label>
           <input type="text" id="name" name="name" required placeholder="your name" />
@@ -213,6 +41,128 @@
 
         <button type="submit" class="submit-btn">[send message]</button>
       </form>
-    </main>
-  </body>
-</html>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .contact-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+
+  .contact-header {
+    margin-bottom: 3.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    opacity: 0.6;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-info p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.85;
+    margin-top: 0;
+  }
+
+  .direct-links {
+    margin-top: 2rem;
+  }
+
+  .direct-links .label {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    margin-bottom: 0.25rem;
+  }
+
+  .direct-links a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    font-size: 0.95rem;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  input,
+  textarea {
+    background: transparent;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+    padding: 0.75rem 1rem;
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border-radius: 0;
+    transition: border-color 0.2s ease;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: currentColor;
+  }
+
+  .submit-btn {
+    align-self: flex-start;
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    background: currentColor;
+    color: var(--bg-color, #000);
+  }
+
+  @media (prefers-color-scheme: light) {
+    .submit-btn:hover {
+      color: #fff;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>
