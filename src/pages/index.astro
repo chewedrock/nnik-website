@@ -1,5 +1,5 @@
 ---
-// src/pages/index.astro — Performance-optimized build with Vercel Analytics
+// src/pages/index.astro — Mosaic Grid wired to public/media/videos/ with automatic fallback
 import Analytics from '@vercel/analytics/astro';
 
 const awards = [
@@ -17,7 +17,8 @@ const projects = [
     subtitle: "immersive audio-visual & contemporary dance",
     year: "2019–2022",
     category: "project director",
-    video: "https://12hz.in/wp-content/uploads/2020/01/EKJ-thumbnail3.mp4",
+    video: "/media/videos/if-we-vanish.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/01/EKJ-thumbnail3.mp4",
     credits: "nikhil nagaraj, felix deufel, ronita mookerji, tobias feldmeier, aruna ganesh ram, spriha nakhare, niranjan gokhale",
     support: "supported by international coproduction fund goethe-institut & goethe-institut bangalore",
     description: "if we vanish is an immersive audio-visual and contemporary dance performance presenting an artistic study about some of the most quiet and secluded places in the world. initiated by nikhil nagaraj and felix deufel from a series of isolated audio field recordings, the performance explores endangered soundscapes. in performance, tracking the dancer's body interpolates into pure natural datasets. pure listening causes crucial, intense therapeutic experiences, offering positive health impacts while raising environmental acoustic awareness.",
@@ -31,7 +32,8 @@ const projects = [
     subtitle: "spatial sound & historical audio storytelling",
     year: "2020–2022",
     category: "sound design",
-    video: "https://12hz.in/wp-content/uploads/2020/10/SL1untitled.m4v",
+    video: "/media/videos/scrolls-and-leaves.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/10/SL1untitled.m4v",
     credits: "sound design & audio engineering by nikhil nagaraj for ncbs",
     support: "national centre for biological sciences",
     description: "scrolls & leaves is a world-class spatial sound design experience and podcast project telling untold histories of science, trade, and culture across the indian ocean world. utilizing complex binaural audio spatialization and field recordings, it brings historical soundscapes vividly back to life for global listeners.",
@@ -45,7 +47,8 @@ const projects = [
     subtitle: "experimental sound project & silence study",
     year: "2020",
     category: "composition",
-    video: "https://12hz.in/wp-content/uploads/2020/05/t_video6170384741691293905_mod.mp4",
+    video: "/media/videos/shizukesa.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/05/t_video6170384741691293905_mod.mp4",
     credits: "concept, field recording & sound design by nikhil nagaraj",
     support: "12 hz sound laboratories",
     description: "shizukesa (japanese for tranquility / serene quietness) is an experimental electroacoustic acoustic study exploring micro-dynamics, silence, and environmental reverberations in controlled acoustic spaces.",
@@ -59,7 +62,8 @@ const projects = [
     subtitle: "acoustic architecture & spatial sound",
     year: "2020",
     category: "sound design",
-    video: "https://12hz.in/wp-content/uploads/2020/01/once-upon-thumbnail_new.mp4",
+    video: "/media/videos/once-upon-a-time.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/01/once-upon-thumbnail_new.mp4",
     credits: "sound design & spatial engineering by nikhil nagaraj",
     support: "flinn works & contemporary theatre collaborations",
     description: "an architectural sound design installation using multi-channel spatialization to reframe acoustic storytelling in unconventional performance spaces.",
@@ -73,7 +77,8 @@ const projects = [
     subtitle: "theatrical sound design",
     year: "2019",
     category: "sound design",
-    video: "https://12hz.in/wp-content/uploads/2020/01/EKJ-thumbnail3.mp4",
+    video: "/media/videos/eidgah-ke-jinnat.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/01/EKJ-thumbnail3.mp4",
     credits: "sound designer: nikhil nagaraj | bhasha centre for performing arts",
     support: "bhasha centre for performing arts",
     description: "comprehensive theatrical sound design for the acclaimed stage adaptation of eidgah ke jinnat. blending visceral atmospheric textures, emotional scoring, and dynamic live spatial cues.",
@@ -87,7 +92,8 @@ const projects = [
     subtitle: "generative electronic & sound art",
     year: "2020",
     category: "experiment",
-    video: "https://12hz.in/wp-content/uploads/2020/01/zlll-thumbnail_new.mp4",
+    video: "/media/videos/zllll.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/01/zlll-thumbnail_new.mp4",
     credits: "generative audio & sound art by nikhil nagaraj",
     support: "12 hz sound laboratories",
     description: "an experimental sound synthesis project using low-frequency oscillation (lfo) manipulation, custom feedback loops, and sub-bass resonance research.",
@@ -101,7 +107,8 @@ const projects = [
     subtitle: "3d sound concert & musical journey",
     year: "2020",
     category: "3d sound",
-    video: "https://12hz.in/wp-content/uploads/2020/01/threshold-thumbnail_new.mp4",
+    video: "/media/videos/the-threshold.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/01/threshold-thumbnail_new.mp4",
     credits: "3d sound design & live audio mix by nikhil nagaraj",
     support: "the threshold ensemble",
     description: "an immersive 3d spatial audio concert experience, placing audience members in the center of multi-layered vocal, instrumental, and electronic soundscapes.",
@@ -115,7 +122,8 @@ const projects = [
     subtitle: "goethe-institut sound production",
     year: "2018",
     category: "sound design",
-    video: "https://12hz.in/wp-content/uploads/2020/01/i-am-not-here-trailer.mp4",
+    video: "/media/videos/i-am-not-here.mp4",
+    fallbackVideo: "https://12hz.in/wp-content/uploads/2020/01/i-am-not-here-trailer.mp4",
     credits: "sound design: nikhil nagaraj | director: deepika arwind",
     support: "goethe-institut bangalore",
     description: "sound design for deepika arwind's critically acclaimed production i am not here. a stark, high-tension acoustic landscape exploring presence, vulnerability, and sound dynamics.",
@@ -184,10 +192,10 @@ const projects = [
 
       .header-left { padding-left: 12px; }
 
-      .brand-title { 
-        font-size: 38px; 
-        font-weight: 900; 
-        letter-spacing: -1px; 
+      .brand-title {
+        font-size: 38px;
+        font-weight: 900;
+        letter-spacing: -1px;
         line-height: 1;
       }
 
@@ -196,10 +204,10 @@ const projects = [
         text-decoration: none;
       }
 
-      .brand-sub { 
-        font-size: 14px; 
-        color: var(--muted-color); 
-        margin-top: 8px; 
+      .brand-sub {
+        font-size: 14px;
+        color: var(--muted-color);
+        margin-top: 8px;
       }
 
       nav { padding-right: 12px; }
@@ -432,42 +440,13 @@ const projects = [
         color: var(--accent-color);
       }
 
-      .modal-section {
-        margin-bottom: 22px;
-      }
-
-      .modal-section:last-child {
-        margin-bottom: 0;
-      }
-
-      .modal-label {
-        font-size: 12px;
-        color: var(--muted-color);
-        letter-spacing: 1px;
-        margin-bottom: 6px;
-      }
-
-      .modal-text {
-        font-size: 15px;
-        color: var(--text-color);
-        line-height: 1.65;
-      }
-      
-      .performance-list {
-        list-style: none;
-        padding-left: 0;
-      }
-
-      .performance-list li {
-        font-size: 14px;
-        color: var(--text-color);
-        padding: 6px 0;
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      .performance-list li:last-child {
-        border-bottom: none;
-      }
+      .modal-section { margin-bottom: 22px; }
+      .modal-section:last-child { margin-bottom: 0; }
+      .modal-label { font-size: 12px; color: var(--muted-color); letter-spacing: 1px; margin-bottom: 6px; }
+      .modal-text { font-size: 15px; color: var(--text-color); line-height: 1.65; }
+      .performance-list { list-style: none; padding-left: 0; }
+      .performance-list li { font-size: 14px; color: var(--text-color); padding: 6px 0; border-bottom: 1px solid var(--border-color); }
+      .performance-list li:last-child { border-bottom: none; }
 
       @media (max-width: 768px) {
         .card.span-wide, .card.span-big { grid-column: span 1; }
@@ -508,15 +487,16 @@ const projects = [
 
     <main class="grid">
       {projects.map((item) => (
-        <div 
+        <div
           class={`card project-card ${item.mosaicClass}`}
           data-project={JSON.stringify(item)}>
           <div class="thumb-box" style={`aspect-ratio: ${item.aspect};`}>
-            <video 
+            <video
               class="lazy-video"
-              data-src={item.video} 
-              loop 
-              muted 
+              data-src={item.video}
+              data-fallback={item.fallbackVideo}
+              loop
+              muted
               playsinline
               disableRemotePlayback
               preload="none">
@@ -583,14 +563,23 @@ const projects = [
         const maxConcurrent = saveData ? 1 : (isMobile ? 2 : 4);
         const visibleSet = new Set();
 
+        function attachSource(video) {
+          if (video.src || !video.dataset.src) return;
+          video.addEventListener('loadeddata', () => video.classList.add('is-loaded'), { once: true });
+          video.addEventListener('error', () => {
+            if (video.dataset.fallback && video.src !== video.dataset.fallback) {
+              video.src = video.dataset.fallback;
+              video.play().catch(() => {});
+            }
+          }, { once: true });
+          video.src = video.dataset.src;
+        }
+
         function syncPlayback() {
           let playingCount = 0;
           videos.forEach((video) => {
             if (visibleSet.has(video) && playingCount < maxConcurrent) {
-              if (!video.src && video.dataset.src) {
-                video.src = video.dataset.src;
-                video.addEventListener('loadeddata', () => video.classList.add('is-loaded'), { once: true });
-              }
+              attachSource(video);
               video.play().catch(() => {});
               playingCount++;
             } else if (!video.paused) {
@@ -630,7 +619,7 @@ const projects = [
           document.getElementById('modalDesc').textContent = data.description;
           document.getElementById('modalCredits').textContent = data.credits;
           document.getElementById('modalSupport').textContent = data.support;
-          
+
           const perfList = document.getElementById('modalPerformances');
           const frag = document.createDocumentFragment();
           data.performances.forEach((p) => {
