@@ -1,5 +1,6 @@
 ---
-// src/pages/contact.astro — Zero-JS, instant-paint contact page
+// src/pages/contact.astro — Minimal German Grid + Schubert-inspired Acoustic Phase-Lock 2FA
+import Analytics from '@vercel/analytics/astro';
 ---
 
 <!doctype html>
@@ -26,39 +27,321 @@
       <div class="contact-grid">
         <div class="contact-info">
           <p>Available for select film, interactive, and spatial audio commissions.</p>
+          <div class="spec-sheet">
+            <div class="spec-row"><span>protocol</span><span>acoustic phase-lock</span></div>
+            <div class="spec-row"><span>tolerance</span><span>± 3.0 hz</span></div>
+            <div class="spec-row"><span>status</span><span id="sidebarStatus">awaiting input</span></div>
+          </div>
         </div>
 
-        <form action="https://formspree.io/f/mjywyjgo" method="POST" class="contact-form">
+        <form id="contactForm" action="https://formspree.io/f/mjywyjgo" method="POST" class="contact-form">
+          <!-- Invisible bot honeypot -->
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp-field" aria-hidden="true" />
+          <input type="hidden" id="calibrationToken" name="calibration_verification" value="" />
+
           <div class="form-group">
-            <label for="name">// name</label>
+            <label for="name">// 01. name</label>
             <input type="text" id="name" name="name" autocomplete="name" required placeholder="your name" />
           </div>
 
           <div class="form-group">
-            <label for="email">// email</label>
+            <label for="email">// 02. email</label>
             <input type="email" id="email" name="email" autocomplete="email" required placeholder="your@email.com" />
           </div>
 
+          <!-- Artistic 2FA: Unlocks when email is entered -->
+          <section id="gateModule" class="gate-module is-dormant" aria-live="polite">
+            <div class="gate-header">
+              <span class="gate-id">// 02b. human verification — phase lock</span>
+              <button type="button" id="audioToggleBtn" class="audio-btn">[audio: off]</button>
+            </div>
+
+            <p id="gateInstruction" class="gate-instruction">
+              enter a valid email address above to initialize signal calibration.
+            </p>
+
+            <div id="gateControls" class="gate-controls">
+              <div class="meter-frame">
+                <canvas id="phaseCanvas" width="480" height="56"></canvas>
+                <div class="meter-ticks" aria-hidden="true">
+                  <span>140 hz</span>
+                  <span id="targetReadout">target: --- hz</span>
+                  <span>300 hz</span>
+                </div>
+              </div>
+
+              <div class="slider-row">
+                <input
+                  type="range"
+                  id="freqSlider"
+                  min="140"
+                  max="300"
+                  step="0.5"
+                  value="140"
+                  disabled
+                  aria-label="Calibrate oscillator frequency to match target"
+                />
+              </div>
+
+              <div class="gate-telemetry">
+                <span id="currentReadout">osc: 140.0 hz</span>
+                <span id="deltaReadout">Δ: --.- hz</span>
+                <span id="lockBadge" class="lock-badge">[unlocked]</span>
+              </div>
+            </div>
+          </section>
+
           <div class="form-group">
-            <label for="subject">// subject</label>
+            <label for="subject">// 03. subject</label>
             <input type="text" id="subject" name="subject" required placeholder="project inquiry / collaboration" />
           </div>
 
           <div class="form-group">
-            <label for="message">// message</label>
-            <textarea id="message" name="message" rows="7" required placeholder="details about your inquiry..."></textarea>
+            <label for="message">// 04. message</label>
+            <textarea id="message" name="message" rows="6" required placeholder="details about your inquiry..."></textarea>
           </div>
 
-          <button type="submit" class="submit-btn">[send message]</button>
+          <div class="submit-row">
+            <button type="submit" id="submitBtn" class="submit-btn" disabled>[calibrate signal to send]</button>
+          </div>
         </form>
       </div>
     </main>
+
+    <Analytics />
+
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('contactForm');
+        const emailInput = document.getElementById('email');
+        const gateModule = document.getElementById('gateModule');
+        const gateInstruction = document.getElementById('gateInstruction');
+        const freqSlider = document.getElementById('freqSlider');
+        const audioToggleBtn = document.getElementById('audioToggleBtn');
+        const currentReadout = document.getElementById('currentReadout');
+        const targetReadout = document.getElementById('targetReadout');
+        const deltaReadout = document.getElementById('deltaReadout');
+        const lockBadge = document.getElementById('lockBadge');
+        const sidebarStatus = document.getElementById('sidebarStatus');
+        const submitBtn = document.getElementById('submitBtn');
+        const tokenInput = document.getElementById('calibrationToken');
+        const canvas = document.getElementById('phaseCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Deterministic-yet-session-unique target frequency between 175 Hz and 265 Hz
+        const targetFreq = Math.round((175 + Math.random() * 90) * 2) / 2;
+        const startFreq = targetFreq > 220 ? 152 : 288;
+        freqSlider.value = startFreq;
+
+        let isEmailReady = false;
+        let isVerified = false;
+        let audioCtx = null;
+        let refOsc = null;
+        let userOsc = null;
+        let masterGain = null;
+        let audioEnabled = false;
+        let phase = 0;
+
+        function initAudio() {
+          if (audioCtx) return;
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+
+          audioCtx = new AudioContext();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.value = 0.0;
+          masterGain.connect(audioCtx.destination);
+
+          // Reference carrier (left-ish / pure sine)
+          refOsc = audioCtx.createOscillator();
+          refOsc.type = 'sine';
+          refOsc.frequency.value = targetFreq;
+
+          // User tunable oscillator (triangle for subtle harmonic beating)
+          userOsc = audioCtx.createOscillator();
+          userOsc.type = 'triangle';
+          userOsc.frequency.value = parseFloat(freqSlider.value);
+
+          const refGain = audioCtx.createGain();
+          refGain.gain.value = 0.45;
+          const userGain = audioCtx.createGain();
+          userGain.gain.value = 0.35;
+
+          refOsc.connect(refGain).connect(masterGain);
+          userOsc.connect(userGain).connect(masterGain);
+
+          refOsc.start();
+          userOsc.start();
+        }
+
+        function setAudio(state) {
+          audioEnabled = state;
+          if (audioEnabled) {
+            initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            if (masterGain && audioCtx) {
+              masterGain.gain.setTargetAtTime(0.055, audioCtx.currentTime, 0.04);
+            }
+            audioToggleBtn.textContent = '[audio: on]';
+            audioToggleBtn.classList.add('is-active');
+          } else {
+            if (masterGain && audioCtx) {
+              masterGain.gain.setTargetAtTime(0.0, audioCtx.currentTime, 0.04);
+            }
+            audioToggleBtn.textContent = '[audio: off]';
+            audioToggleBtn.classList.remove('is-active');
+          }
+        }
+
+        audioToggleBtn.addEventListener('click', () => {
+          if (!isEmailReady) return;
+          setAudio(!audioEnabled);
+        });
+
+        function updateCalibration() {
+          const current = parseFloat(freqSlider.value);
+          const delta = Math.abs(current - targetFreq);
+
+          if (userOsc && audioCtx) {
+            userOsc.frequency.setTargetAtTime(current, audioCtx.currentTime, 0.02);
+          }
+
+          currentReadout.textContent = `osc: ${current.toFixed(1)} hz`;
+          deltaReadout.textContent = `Δ: ${delta.toFixed(1)} hz`;
+
+          if (delta <= 3.0) {
+            isVerified = true;
+            gateModule.classList.add('is-locked');
+            lockBadge.textContent = '[phase locked]';
+            sidebarStatus.textContent = 'verified // ready';
+            submitBtn.disabled = false;
+            submitBtn.textContent = '[send message]';
+            tokenInput.value = `locked_${targetFreq}hz_delta_${delta.toFixed(1)}`;
+          } else {
+            isVerified = false;
+            gateModule.classList.remove('is-locked');
+            lockBadge.textContent = '[drifting]';
+            sidebarStatus.textContent = 'calibrating signal';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '[calibrate signal to send]';
+            tokenInput.value = '';
+          }
+        }
+
+        function activateGate() {
+          const val = emailInput.value.trim();
+          const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+
+          if (valid && !isEmailReady) {
+            isEmailReady = true;
+            gateModule.classList.remove('is-dormant');
+            freqSlider.disabled = false;
+            targetReadout.textContent = `target: ${targetFreq.toFixed(1)} hz`;
+            gateInstruction.textContent =
+              'tune the oscillator slider to match the target frequency (toggle audio or use the phase waveform).';
+            updateCalibration();
+          } else if (!valid && isEmailReady) {
+            isEmailReady = false;
+            isVerified = false;
+            gateModule.classList.add('is-dormant');
+            gateModule.classList.remove('is-locked');
+            freqSlider.disabled = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '[calibrate signal to send]';
+            sidebarStatus.textContent = 'awaiting input';
+            setAudio(false);
+          }
+        }
+
+        emailInput.addEventListener('input', activateGate);
+        emailInput.addEventListener('blur', activateGate);
+
+        freqSlider.addEventListener('pointerdown', () => {
+          // Subtle auto-enable audio on first human slider touch if not manually muted
+          if (isEmailReady && !audioCtx) {
+            setAudio(true);
+          }
+        });
+
+        freqSlider.addEventListener('input', updateCalibration);
+
+        // Minimalist Braun/Schubert phase interference oscilloscope
+        function drawScope() {
+          const w = canvas.width;
+          const h = canvas.height;
+          const mid = h / 2;
+          const current = parseFloat(freqSlider.value);
+          const diff = current - targetFreq;
+
+          ctx.clearRect(0, 0, w, h);
+
+          // Center datum line
+          ctx.strokeStyle = 'rgba(136, 136, 136, 0.25)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, mid);
+          ctx.lineTo(w, mid);
+          ctx.stroke();
+
+          if (!isEmailReady) {
+            requestAnimationFrame(drawScope);
+            return;
+          }
+
+          // Interference wave: straightens into a clean harmonic when diff -> 0
+          ctx.strokeStyle = isVerified ? '#00ff66' : 'rgba(237, 237, 237, 0.85)';
+          ctx.lineWidth = isVerified ? 2 : 1.25;
+          ctx.beginPath();
+
+          for (let x = 0; x <= w; x += 3) {
+            const norm = x / w;
+            const carrier = Math.sin(norm * Math.PI * 8 + phase);
+            const beat = Math.sin(norm * Math.PI * (8 + diff * 0.18) + phase * (1 + diff * 0.01));
+            const y = mid + (carrier + beat) * 0.5 * (mid - 8);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+
+          phase += 0.06;
+          requestAnimationFrame(drawScope);
+        }
+
+        drawScope();
+
+        form.addEventListener('submit', (e) => {
+          const hp = form.querySelector('.hp-field');
+          if ((hp && hp.value) || !isVerified) {
+            e.preventDefault();
+            return;
+          }
+          setAudio(false);
+        });
+      });
+    </script>
   </body>
 </html>
 
 <style>
   :root {
+    --bg: #000000;
+    --surface: #080808;
+    --fg: #ffffff;
+    --muted: #888888;
+    --border: #222222;
+    --accent: #00ff66;
     color-scheme: dark light;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f6f4;
+      --surface: #ffffff;
+      --fg: #111111;
+      --muted: #666666;
+      --border: #cccccc;
+      --accent: #008f39;
+    }
   }
 
   * {
@@ -67,18 +350,19 @@
 
   body {
     margin: 0;
-    background: #0a0a0a;
-    color: #ededed;
+    background: var(--bg);
+    color: var(--fg);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeSpeed;
+    text-transform: lowercase;
   }
 
-  @media (prefers-color-scheme: light) {
-    body {
-      background: #fafafa;
-      color: #111111;
-    }
+  .hp-field {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .top-nav {
@@ -91,12 +375,13 @@
     color: inherit;
     text-decoration: none;
     font-size: 1rem;
-    opacity: 0.6;
+    opacity: 0.65;
     touch-action: manipulation;
   }
 
   .top-nav a:hover {
     opacity: 1;
+    color: var(--accent);
   }
 
   .contact-container {
@@ -106,94 +391,244 @@
   }
 
   .contact-header {
-    margin-bottom: 4rem;
+    margin-bottom: 3.5rem;
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 1.5rem;
   }
 
   h1 {
-    font-size: 2.1rem;
-    font-weight: 400;
-    margin: 0 0 0.75rem 0;
-    letter-spacing: -0.02em;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.03em;
   }
 
   .subtitle {
-    opacity: 0.65;
-    font-size: 1.1rem;
+    color: var(--muted);
+    font-size: 1rem;
     margin: 0;
   }
 
   .contact-grid {
     display: grid;
-    grid-template-columns: 1fr 1.6fr;
+    grid-template-columns: 1fr 1.65fr;
     gap: 4.5rem;
     align-items: start;
   }
 
   .contact-info p {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     line-height: 1.7;
-    opacity: 0.85;
     margin-top: 0;
+    margin-bottom: 2rem;
+  }
+
+  .spec-sheet {
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .spec-row span:last-child {
+    color: var(--fg);
   }
 
   .contact-form {
     display: flex;
     flex-direction: column;
-    gap: 1.75rem;
+    gap: 1.65rem;
   }
 
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.55rem;
   }
 
   label {
-    font-size: 0.95rem;
-    opacity: 0.75;
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
   }
 
   input,
   textarea {
     width: 100%;
-    background: transparent;
-    border: 1px solid rgba(128, 128, 128, 0.4);
-    padding: 1rem 1.2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.95rem 1.1rem;
     color: inherit;
     font-family: inherit;
-    font-size: 1.1rem;
+    font-size: 1rem;
     border-radius: 0;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.15s ease;
   }
 
   input:focus,
   textarea:focus {
     outline: none;
-    border-color: currentColor;
+    border-color: var(--fg);
+  }
+
+  /* Dieter Rams / Schubert Calibration Module */
+  .gate-module {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 1.25rem;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .gate-module.is-dormant {
+    opacity: 0.5;
+  }
+
+  .gate-module.is-locked {
+    border-color: var(--accent);
+  }
+
+  .gate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.65rem;
+  }
+
+  .gate-id {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .gate-module.is-locked .gate-id,
+  .gate-module.is-locked .lock-badge {
+    color: var(--accent);
+  }
+
+  .audio-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.65rem;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .audio-btn.is-active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .gate-instruction {
+    font-size: 0.88rem;
+    color: var(--fg);
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+  }
+
+  .meter-frame {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    padding: 0.5rem 0.75rem 0.4rem;
+    margin-bottom: 0.9rem;
+  }
+
+  #phaseCanvas {
+    width: 100%;
+    height: 44px;
+    display: block;
+  }
+
+  .meter-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  .slider-row {
+    margin-bottom: 0.75rem;
+  }
+
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 22px;
+    background: var(--fg);
+    border: 1px solid var(--bg);
+    cursor: ew-resize;
+  }
+
+  .gate-module.is-locked input[type='range']::-webkit-slider-thumb {
+    background: var(--accent);
+  }
+
+  input[type='range']::-moz-range-thumb {
+    width: 14px;
+    height: 22px;
+    background: var(--fg);
+    border: 1px solid var(--bg);
+    border-radius: 0;
+    cursor: ew-resize;
+  }
+
+  .gate-module.is-locked input[type='range']::-moz-range-thumb {
+    background: var(--accent);
+  }
+
+  .gate-telemetry {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
   }
 
   .submit-btn {
     align-self: flex-start;
     background: transparent;
-    border: 1px solid currentColor;
-    color: inherit;
+    border: 1px solid var(--fg);
+    color: var(--fg);
     font-family: inherit;
-    font-size: 1.05rem;
-    padding: 1rem 2rem;
+    font-size: 1rem;
+    padding: 0.95rem 1.8rem;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     touch-action: manipulation;
   }
 
-  .submit-btn:hover {
-    background: currentColor;
-    color: #0a0a0a;
+  .submit-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
   }
 
-  @media (prefers-color-scheme: light) {
-    .submit-btn:hover {
-      color: #fafafa;
-    }
+  .submit-btn:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .submit-btn:not(:disabled):hover {
+    background: var(--accent);
+    color: #000000;
   }
 
   @media (max-width: 768px) {
