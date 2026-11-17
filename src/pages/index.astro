@@ -1,5 +1,7 @@
 ---
-// src/pages/index.astro — Performance-optimized build with chronological awards
+// src/pages/index.astro — Performance-optimized build with Vercel Analytics
+import Analytics from '@vercel/analytics/astro';
+
 const awards = [
   { title: "best sound design", event: "asian american podcasters association / golden crane award", year: "2021" },
   { title: "coproduction grant", event: "internationaler koproduktionsfonds (de)", year: "2020" },
@@ -220,7 +222,6 @@ const projects = [
         letter-spacing: 1px;
       }
 
-      /* Non-Uniform Mosaic Grid */
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -314,7 +315,6 @@ const projects = [
 
       .card:hover .card-title { color: var(--accent-color); }
 
-      /* Bottom CV Section */
       .awards-footer {
         padding: 0 12px;
         margin-top: 32px;
@@ -366,7 +366,6 @@ const projects = [
         flex-shrink: 0;
       }
 
-      /* Unified Project Modal Inspector */
       .modal-backdrop {
         position: fixed;
         inset: 0;
@@ -531,7 +530,6 @@ const projects = [
       ))}
     </main>
 
-    <!-- Bottom CV Format Section -->
     <footer class="awards-footer">
       <div class="cv-label">// awards & recognitions</div>
       <div class="cv-list">
@@ -547,7 +545,6 @@ const projects = [
       </div>
     </footer>
 
-    <!-- Project Inspector Modal -->
     <div id="projectModal" class="modal-backdrop">
       <div class="modal-content">
         <button id="closeModalBtn" class="close-btn">[close x]</button>
@@ -667,5 +664,7 @@ const projects = [
         });
       });
     </script>
+
+    <Analytics />
   </body>
 </html>
