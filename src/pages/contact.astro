@@ -12,6 +12,7 @@ import Analytics from '@vercel/analytics/astro';
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
     <link rel="preconnect" href="https://formspree.io" crossorigin />
     <link rel="prefetch" href="/" />
+    <Analytics />
   </head>
   <body>
     <nav class="top-nav">
@@ -107,8 +108,6 @@ import Analytics from '@vercel/analytics/astro';
         </form>
       </div>
     </main>
-
-    <Analytics />
 
     <script is:inline>
       document.addEventListener('DOMContentLoaded', () => {
